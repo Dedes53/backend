@@ -5,16 +5,19 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "kills")
+@Table(name = "skills")
 public class Skill {
 
     @Id
     @GeneratedValue
     private UUID id;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Category category;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type;
     @Column(nullable = false)
     private String title;
     private String normalizedTitle;
@@ -22,15 +25,16 @@ public class Skill {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "utende_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 
     public Skill() {
     }
 
-    public Skill(Category category, String title, String description) {
+    public Skill(Category category, Type type, String title, String description) {
         this.category = category;
+        this.type = type;
         this.title = title;
         this.description = description;
     }
@@ -46,6 +50,22 @@ public class Skill {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getNormalizedTitle() {
+        return normalizedTitle;
+    }
+
+    public void setNormalizedTitle(String normalizedTitle) {
+        this.normalizedTitle = normalizedTitle;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public String getTitle() {

@@ -40,7 +40,7 @@ public class UserService {
     }
 
     public User findById(UUID userID) {
-        return this.userRepository.findById(userID).orElseThrow(() -> new NotFoundException("Utente"));
+        return this.userRepository.findById(userID).orElseThrow(() -> new NotFoundException("Utente non trovato"));
     }
 
 //    possibile find by email

@@ -118,4 +118,32 @@ public class User {
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
+
+
+    //    helper per setSkill
+    public void addSkill(Skill skill) {
+        skills.add(skill);
+        skill.setUser(this);
+    }
+
+    public void removeSkill(Skill skill) {
+        skills.remove(skill);
+        skill.setUser(null);
+    }
+
+    
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", role=" + role +
+                ", skills=" + skills +
+                '}';
+    }
 }
