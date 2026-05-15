@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,10 +18,12 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder bcrypt;
 
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder bcrypt) {
         this.userRepository = userRepository;
+        this.bcrypt = bcrypt;
     }
 
 
@@ -32,7 +35,7 @@ public class UserService {
         if (this.userRepository.existsByUsername(body.username()))
             throw new BadRequestException("Lo username " + body.username() + " è già utilizzato da un altro utente");
 
-        User newU = new User(body.username(), body.password(), body.email(), body.name(), body.surname());
+        User newU = new User(body.username(), bcrypt.encode(body.password()), body.email(), body.name(), body.surname());
 
         // TODO aggiungere email di conferma registrazione
 
