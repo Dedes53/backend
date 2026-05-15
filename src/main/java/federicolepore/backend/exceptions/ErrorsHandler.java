@@ -15,7 +15,7 @@ public class ErrorsHandler {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
     }
 
-    
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO handleNotFoundException(NotFoundException ex) {
@@ -27,6 +27,13 @@ public class ErrorsHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleUnauthorizedException(UnauthorizedException ex) {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+
+    @ExceptionHandler(PayloadValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsListDTO handlePayloadValidationException(PayloadValidationException ex) {
+        return new ErrorsListDTO(ex.getMessage(), LocalDateTime.now(), ex.getErrors());
     }
 
 }

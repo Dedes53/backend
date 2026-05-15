@@ -46,6 +46,9 @@ public class UserService {
         return this.userRepository.findById(userID).orElseThrow(() -> new NotFoundException("Utente non trovato"));
     }
 
+    public User findByUsername(String username) {
+        return this.userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Utente non trovato"));
+    }
 //    possibile find by email
 
     public Page<User> findAll(int page, int size, String sortBy) {
