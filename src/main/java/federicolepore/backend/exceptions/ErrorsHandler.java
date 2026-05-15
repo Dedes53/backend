@@ -1,6 +1,7 @@
 package federicolepore.backend.exceptions;
 
 import federicolepore.backend.DTO.ErrorDTO;
+import federicolepore.backend.DTO.ErrorsListDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
