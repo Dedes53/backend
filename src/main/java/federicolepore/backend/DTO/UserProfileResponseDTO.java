@@ -7,6 +7,7 @@ public record UserProfileResponseDTO(
         String username,
         String email,
         String name,
-        String surname
+        String surname,
+        String avatarUrl
 ) {
 }
