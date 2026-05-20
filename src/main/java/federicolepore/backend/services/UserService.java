@@ -71,7 +71,7 @@ public class UserService {
                 throw new BadRequestException("Lo username " + body.username() + " è già utilizzato da un altro utente");
 
         toUpdate.setUsername(body.username());
-        toUpdate.setPassword(body.password());
+        toUpdate.setPassword(bcrypt.encode(body.password()));
         toUpdate.setEmail(body.email());
         toUpdate.setName(body.name());
         toUpdate.setSurname(body.surname());
