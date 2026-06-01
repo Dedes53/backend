@@ -98,6 +98,10 @@ public class SkillService {
         return skillRepository.save(skillToUpdate);
     }
 
+    public List<Skill> findUserSkillsByType(UUID userId, Type type) {
+        User user = this.getUser(userId);
+        return this.skillRepository.findByUserIdAndType(user.getId(), type);
+    }
 
     public void deleteSkill(UUID skillId, UUID userID) {
         Skill toDelete = this.findById(skillId);
