@@ -10,6 +10,8 @@ public record SkillResponseDTO(
         String title,
         String description,
         Category category,
-        Type type
+        Type type,
+        UUID userId,
+        String ownerUsername
 ) {
 }

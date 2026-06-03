@@ -30,31 +30,18 @@ public class SkillController {
         return currentUser.getId();
     }
 
-    private SkillResponseDTO toDto(Skill s) {
-        return new SkillResponseDTO(
-                s.getId(),
-                s.getTitle(),
-                s.getDescription(),
-                s.getCategory(),
-                s.getType()
-        );
-    }
-
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SkillResponseDTO createSkill(@RequestBody NewSkillDTO body, Authentication authentication) {
         UUID userId = getLoggedUserId(authentication);
         Skill created = skillService.createSkill(body, userId);
-        return toDto(created);
+        return skillService.toDto(created);
     }
-
 
     @GetMapping("/{skillId}")
     public SkillResponseDTO getSkillById(@PathVariable UUID skillId) {
-        return toDto(skillService.findById(skillId));
+        return skillService.toDto(skillService.findById(skillId));
     }
-
 
     @GetMapping("/me")
     public List<SkillResponseDTO> getMySkillsByType(
@@ -64,10 +51,9 @@ public class SkillController {
         UUID userId = getLoggedUserId(authentication);
         return skillService.findMySkillsByType(userId, type)
                 .stream()
-                .map(this::toDto)
+                .map(skillService::toDto)
                 .toList();
     }
-
 
     @GetMapping("/search")
     public Page<SkillResponseDTO> searchOthersSkills(
@@ -77,11 +63,9 @@ public class SkillController {
             @RequestParam(defaultValue = "title") String sortBy,
             Authentication authentication
     ) {
-        UUID userId = getLoggedUserId(authentication);
-        return skillService.searchOthersSkills(query, userId, page, size, sortBy)
-                .map(this::toDto);
+        User currentUser = (User) authentication.getPrincipal();
+        return skillService.searchOthersSkills(currentUser, query, page, size, sortBy);
     }
-
 
     @PutMapping("/{skillId}")
     public SkillResponseDTO updateSkill(
@@ -91,7 +75,7 @@ public class SkillController {
     ) {
         UUID userId = getLoggedUserId(authentication);
         Skill updated = skillService.updateSkill(skillId, userId, body);
-        return toDto(updated);
+        return skillService.toDto(updated);
     }
 
     @GetMapping("/user/{userId}")
@@ -101,10 +85,10 @@ public class SkillController {
     ) {
         return skillService.findUserSkillsByType(userId, type)
                 .stream()
-                .map(this::toDto)
+                .map(skillService::toDto)
                 .toList();
     }
-    
+
     @DeleteMapping("/{skillId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSkill(

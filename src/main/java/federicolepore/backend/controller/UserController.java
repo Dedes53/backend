@@ -3,11 +3,13 @@ package federicolepore.backend.controller;
 import federicolepore.backend.DTO.UserDTO;
 import federicolepore.backend.DTO.UserProfileResponseDTO;
 import federicolepore.backend.entities.User;
+import federicolepore.backend.services.CloudinaryService;
 import federicolepore.backend.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -16,9 +18,12 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final CloudinaryService cloudinaryService;
 
-    public UserController(UserService userService) {
+
+    public UserController(UserService userService, CloudinaryService cloudinaryService) {
         this.userService = userService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     private UserProfileResponseDTO toProfileDTO(User u) {
@@ -55,6 +60,20 @@ public class UserController {
     @PutMapping("/{userId}")
     public UserProfileResponseDTO updateUser(@PathVariable UUID userId, @RequestBody UserDTO body) {
         return toProfileDTO(userService.update(userId, body));
+    }
+
+    @PatchMapping("/me/avatar")
+    public UserProfileResponseDTO uploadMyAvatar(
+            @RequestParam("avatar") MultipartFile file,
+            Authentication authentication
+    ) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        String publicId = "user_" + currentUser.getId();
+        String avatarUrl = cloudinaryService.uploadAvatar(file, publicId);
+
+        User updated = userService.updateAvatar(currentUser.getId(), avatarUrl);
+        return toProfileDTO(updated);
     }
 
     @DeleteMapping("/{userId}")

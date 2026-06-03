@@ -79,6 +79,12 @@ public class UserService {
         return this.userRepository.save(toUpdate);
     }
 
+    public User updateAvatar(UUID userId, String avatarUrl) {
+        User user = this.findById(userId);
+        user.setAvatarUrl(avatarUrl);
+        return this.userRepository.save(user);
+    }
+
     public void delete(UUID userId) {
         this.userRepository.delete(this.findById(userId));
     }
