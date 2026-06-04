@@ -4,6 +4,7 @@ import federicolepore.backend.DTO.LoginDTO;
 import federicolepore.backend.DTO.LoginRespDTO;
 import federicolepore.backend.DTO.NewUtenteRespDTO;
 import federicolepore.backend.DTO.UserDTO;
+import federicolepore.backend.entities.User;
 import federicolepore.backend.exceptions.PayloadValidationException;
 import federicolepore.backend.services.AuthService;
 import federicolepore.backend.services.UserService;
@@ -25,22 +26,27 @@ public class AuthController {
         this.userService = utenteService;
     }
 
-
     @PostMapping("/login")
     public LoginRespDTO login(@RequestBody LoginDTO body) {
         return new LoginRespDTO(this.authService.checkCredentialsAndGenerateToken(body));
     }
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED) //201
+    @ResponseStatus(HttpStatus.CREATED)
     public NewUtenteRespDTO saveUser(@RequestBody @Validated UserDTO body, BindingResult validationResult) {
-
         if (validationResult.hasErrors()) {
-            List<String> errors = validationResult.getFieldErrors().stream().map(e -> e.getDefaultMessage()).toList();
+            List<String> errors = validationResult.getFieldErrors().stream()
+                    .map(e -> e.getDefaultMessage())
+                    .toList();
             throw new PayloadValidationException(errors);
         }
 
-        return new NewUtenteRespDTO(this.userService.saveNewUser(body).getId());
+        User saved = this.userService.saveNewUser(body);
+
+        this.authService.sendWelcomeEmail(saved);
+
+        return new NewUtenteRespDTO(saved.getId());
     }
 
+    
 }
